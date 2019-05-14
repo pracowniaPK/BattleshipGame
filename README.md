@@ -4,5 +4,5 @@ _Multiplayer Battleship-like game_
 ### Uruchamianie servera deweloperskiego
 ```
 > venv\Scripts\activate.bat
-> run_devserver.bat
+> python manage.py run
 ```
