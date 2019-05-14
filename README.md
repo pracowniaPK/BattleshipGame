@@ -1,5 +1,5 @@
-# BomberGame
-_Multiplayer Bomber-like game_
+# BattleshipGame
+_Multiplayer Battleship-like game_
 
 ### Uruchamianie servera deweloperskiego
 ```
