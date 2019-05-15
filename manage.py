@@ -1,6 +1,6 @@
 from flask_script import Manager
 
-from battleship.app import app, sio
+from battleship.app import app, socketio
 
 
 manager = Manager(app)
@@ -12,7 +12,7 @@ def hello():
 @manager.command
 def run():
     app.config['DEBUG'] = True
-    sio.run(app) 
+    socketio.run(app) 
 
 if __name__ == "__main__":
     manager.run()

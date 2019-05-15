@@ -1,9 +1,11 @@
 from flask import Flask, g, render_template, redirect, request, url_for
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO, emit, join_room, send
+
+from game import Game
 
 
 app = Flask(__name__)
-sio = SocketIO(app)
+socketio = SocketIO(app)
 ROOMS = {}
 
 @app.route('/')
@@ -21,3 +23,40 @@ def games_list():
 @app.route('/game_view')
 def game_view():
 	return render_template('register/game_view.html')
+
+@socketio.on('create')
+def on_create(date):
+	nick = date['nick']
+	new_game = Game(nick, date['size'])
+	room = new_game.room
+	ROOMS[room] = new_game
+	join_room(room)
+	emit('game_update', ROOMS[room].to_json(), room=room)
+
+@socketio.on('join')
+def on_join(data):
+	room = data['room']
+	if room in ROOMS and ROOMS[room] == 1:
+		ROOMS[room].players_count += 1
+		join_room(room)
+		send('player {} joined'.format(g.nick), room=room)
+		emit('game_update', ROOMS[room].to_json(), room=room)
+	elif ROOMS[room] > 1:
+		send('room is ful')
+	else:
+		send('there is no room {}'.format(room))
+
+@socketio.on('setup')
+def on_setup(data):
+	room = data['room']
+	room.setup(data['board'], data['nick'])
+	if room.ready:
+		emit('game_update', ROOMS[room].to_json(), room=room)
+
+@socketio.on('shot')
+def on_shot(data):
+	x = int(data['x'])
+	y = int(data['y'])
+	room = data['room']
+	ROOMS[room].shot(x, y)
+	emit('game_update', ROOMS[room].to_json(), room=room)
