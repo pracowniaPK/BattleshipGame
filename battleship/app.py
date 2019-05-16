@@ -1,7 +1,7 @@
 from flask import Flask, g, render_template, redirect, request, url_for
 from flask_socketio import SocketIO, emit, join_room, send
 
-from game import Game
+from .game import Game
 
 
 app = Flask(__name__)
@@ -16,8 +16,9 @@ def register():
 def games_list():
 	if request.method == 'POST':
 		g.nick = request.form['nick']
+	try:
 		return render_template('register/games_list.html', nick=g.nick, rooms=ROOMS)
-	else:
+	except AttributeError as e:
 		return redirect(url_for('register.register'))
 
 @app.route('/game_view')
@@ -36,8 +37,8 @@ def on_create(date):
 @socketio.on('join')
 def on_join(data):
 	room = data['room']
-	if room in ROOMS and ROOMS[room] == 1:
-		ROOMS[room].players_count += 1
+	if room in ROOMS and ROOMS[room].player2 == None:
+		ROOMS[room].player2 = g.nick
 		join_room(room)
 		send('player {} joined'.format(g.nick), room=room)
 		emit('game_update', ROOMS[room].to_json(), room=room)
