@@ -13,4 +13,7 @@ def games_list():
 @bp.route('/game_view')
 def game_view():
 	return render_template('register/game_view.html')
-	
+
+@bp.route('/game_intro_view')
+def game_intro_view():
+	return render_template('register/game_intro_view.html')

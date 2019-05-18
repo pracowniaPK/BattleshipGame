@@ -6,5 +6,5 @@ app = Flask(__name__)
 def hello_world():
     return 'Boooooooom!'
 	
-from bomber import register
+from battleship import register
 app.register_blueprint(register.bp)
