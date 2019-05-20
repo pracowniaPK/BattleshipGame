@@ -42,7 +42,7 @@ def on_join(data):
 		join_room(room)
 		send('player {} joined'.format(g.nick), room=room)
 		emit('game_update', ROOMS[room].to_json(), room=room)
-	elif ROOMS[room] > 1:
+	elif room in ROOMS:
 		send('room is ful')
 	else:
 		send('there is no room {}'.format(room))

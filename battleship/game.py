@@ -1,4 +1,5 @@
 import random
+import json
 
 class Game:
     ''' Game object, keeps current state of game.  
@@ -19,6 +20,9 @@ class Game:
         self.player2 = None
         self.round = None
         self.won = None
+
+    def to_json(self):
+        return json.dumps(self.__dict__)
 
     def connect_player2(self, nick):
         self.player2 = nick
