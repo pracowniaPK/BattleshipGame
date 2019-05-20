@@ -37,7 +37,7 @@ def test_shot():
     assert game.round == 2
     assert game.won == None
 
-    game.shot(1, 2)
+    game.shot(2, 1)
     assert game.board == [5, 4, 0, 3, 6, 3, 0, 2, 0]
     assert game.won == 2
 

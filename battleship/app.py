@@ -18,8 +18,8 @@ def games_list():
 		g.nick = request.form['nick']
 	try:
 		return render_template('register/games_list.html', nick=g.nick, rooms=ROOMS)
-	except AttributeError as e:
-		return redirect(url_for('register.register'))
+	except AttributeError as _:
+		return redirect(url_for('register'))
 
 @app.route('/game_view')
 def game_view():
