@@ -17,7 +17,7 @@ def test_setup():
     assert game.board == [0, 2, 0, 1, 6, 1, 0, 2, 0]
     assert game.player1 == 'test_nick'
     assert game.player2 == 'test_nick2'
-    assert game.round != None
+    assert game.round == 1 or game.round == 2
 
 def test_shot():
     game = Game('test_nick', 3)
