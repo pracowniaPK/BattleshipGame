@@ -1,0 +1,3 @@
+graft battleship/static
+graft battleship/templates
+global-exclude *.pyc
