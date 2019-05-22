@@ -1,6 +1,6 @@
 //Create table for battlefield
 //IMPORTANT!!! size array
-length_battlefield = 11;
+var length_battlefield = 11;
 var battlefield = new Array(length_battlefield);
 for (i = 0; i < battlefield.length; i++){
   battlefield[i] = new Array(length_battlefield);
@@ -179,9 +179,10 @@ function onButtonDown(){
         }
       }
     }
-  }
+    set_lock(x,y,flag_ship[flag_ship.length-1]);
     write_all_battlefield();
     flag_ship.pop();
+  }
 
     if(flag_ship.length == 0){
       button.interactive = true;
@@ -215,18 +216,52 @@ function write_all_battlefield(){
 }
 
 function chech_locked(x, y, flag_ship){
-  // console.log(x+" "+y);
-  for(var i = 0; i < flag_ship; i++){
-    if(vertical == true){
-      if(battlefield[y-1+i][x] == 'L' || battlefield[y-1+i][x] == 1){
-        return true;
-      }
+  console.log(flag_ship);
+  if(flag_ship == 1){
+    if(battlefield[y][x] == 'L'){
+      return true;
     }
-    else{
-      if(battlefield[y][x-1+i] == 'L' || battlefield[y][x-1+i] == 1){
-        return true;
+  }
+  else{
+    for(var i = 0; i < flag_ship; i++){
+      if(vertical == true){
+        if((y-1+i) < 0 || (y-1+i) > battlefield.length - 1  || battlefield[y-1+i][x] == 'L' || battlefield[y-1+i][x] == 1){
+          return true;
+        }
+      }
+      else{
+        if((x-1+i) < 0 || (x-1+i) > battlefield.length - 1 || battlefield[y][x-1+i] == 'L' || battlefield[y][x-1+i] == 1){
+          return true;
+        }
       }
     }
   }
   return false;
+}
+
+function set_lock(x ,y ,flag_ship){
+  if(flag_ship == 1){
+    for(var i = 0; i < 3; i++){
+      for(var j = 0; j < 3; j++){
+        if((y-1+j)>=0  && (y-1+j)<battlefield.length && (x-1+i) >=0 && (x-1+i) < battlefield.length && battlefield[y-1+j][x-1+i] != 1){
+          battlefield[y-1+j][x-1+i] = 'L';
+          sectors[y-1+j][x-1+i].interactive = false;
+        }
+      }
+    }
+  }
+  else{
+    for(var i = 0; i < 3; i++){
+      for(var j = 0; j < flag_ship+2; j++){
+        if(vertical == true && (y-2+j)>=0  && (y-2+j)<battlefield.length && (x-1+i) >=0 && (x-1+i) < battlefield.length && battlefield[y-2+j][x-1+i] != 1){
+          battlefield[y-2+j][x-1+i] = 'L';
+          sectors[y-2+j][x-1+i].interactive = false;
+        }
+        else if(vertical == false && (y-1+i)>=0  && (y-1+i)<battlefield.length && (x-2+j) >=0 && (x-2+j) < battlefield.length && battlefield[y-1+i][x-2+j] != 1){
+          battlefield[y-1+i][x-2+j] = 'L';
+          sectors[y-1+i][x-2+j].interactive = false;
+        }
+      }
+    }
+  }
 }
