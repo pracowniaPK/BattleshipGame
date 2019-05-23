@@ -1,13 +1,14 @@
-<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>Hello World</title>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.5.5/pixi.min.js"></script>
-  <script type="text/javascript" src="{{ url_for('static', filename='images/battlefield.json') }}"></script>
-</head>
-<body onmousemove="mouse_position(event)">
-  <style> body {padding: 0; margin: 50px}</style>
-  <script type="text/javascript" src="{{ url_for('static', filename='javascript/load.js') }}"></script>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block content %}
+  <script type="text/javascript" >
+    console.log('{{nick}}');
+    console.log('{{room}}');
+    var game;
+    socket.emit('get_game', '{{room}}', function (data) { 
+        game = JSON.parse(data);
+        console.log(game);
+    });
+  </script>
+  <script type="text/javascript" src="{{ url_for('static', filename='javascript/game.js') }}"></script>
+{% endblock %}
