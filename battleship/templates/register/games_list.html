@@ -1,1 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<script type="text/javascript" >
+function click_join_room(room) {
+    let data = {};
+    data.room = room;
+    data.nick = '{{nick}}';
+    socket.emit('join' ,data);
+    redirect_to_game('{{nick}}', room);
+}
+function click_new_room(nick) {
+    let data = {};
+    data.nick = nick;
+    socket.emit('create', data, function (data) { 
+        data = JSON.parse(data);
+        redirect_to_game(nick, data['room']);
+    });
+}
+function redirect_to_game(nick, room) {
+    var url = '{{ url_for("game_view") }}';
+    var form = $('<form action="' + url + '" method="post">' +
+    '<input type="text" name="nick" value="' + nick +  '" />' +
+    '<input type="text" name="room" value="' + room + '" />' +
+    '</form>');
+    $('body').append(form);
+    form.submit();
+}
+</script>
 nick: {{nick}}
+{% for item in rooms %}
+        <li><button onclick="click_join_room('{{item.room}}')">{{ item.room }} : {{item.player1}}</button></li>
+{% endfor %}
+
+<button onclick="click_new_room('{{nick}}')">New game</button>
+
+{% endblock %}

@@ -16,31 +16,38 @@ def register():
 def games_list():
 	if request.method == 'POST':
 		g.nick = request.form['nick']
+		print(g.nick)
 	try:
-		return render_template('register/games_list.html', nick=g.nick, rooms=ROOMS)
+		# TODO odfiltrować pełne gry
+		return render_template('register/games_list.html', nick=g.nick, rooms=ROOMS.values())
 	except AttributeError as _:
 		return redirect(url_for('register'))
 
-@app.route('/game_view')
+@app.route('/game_view', methods=['POST'])
 def game_view():
-	return render_template('register/game_view.html')
+	room = request.form['room']
+	nick = request.form['nick']
+	return render_template('register/game_intro_view.html', nick=nick, room=room)
 
 @socketio.on('create')
 def on_create(date):
 	nick = date['nick']
-	new_game = Game(nick, date['size'])
+	new_game = Game(nick, 11)
 	room = new_game.room
 	ROOMS[room] = new_game
 	join_room(room)
-	emit('game_update', ROOMS[room].to_json(), room=room)
+	# emit('game_update', ROOMS[room].to_json(), room=room)
+	return new_game.to_json()
 
 @socketio.on('join')
 def on_join(data):
 	room = data['room']
+	nick = data['nick']
+	print(room, nick)
 	if room in ROOMS and ROOMS[room].player2 == None:
-		ROOMS[room].player2 = g.nick
+		ROOMS[room].player2 = nick
 		join_room(room)
-		send('player {} joined'.format(g.nick), room=room)
+		#send('player {} joined'.format(nick), room=room)
 		emit('game_update', ROOMS[room].to_json(), room=room)
 	elif room in ROOMS:
 		send('room is ful')
