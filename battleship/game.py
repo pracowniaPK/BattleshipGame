@@ -18,6 +18,7 @@ class Game:
         self.size = size
         self.player1 = nick
         self.player2 = None
+        self.ready = False
         self.round = None
         self.won = None
 
@@ -37,6 +38,7 @@ class Game:
                 if(self.board[i] == 1 and board[i] == 2):
                     self.board[i] = 6
             self.round = random.randint(1,2)
+            self.ready = True
         else:
             self.board = board
 
