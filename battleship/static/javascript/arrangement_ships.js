@@ -1,5 +1,6 @@
 //Create table for battlefield
 //IMPORTANT!!! size array
+
 var length_battlefield = 11;
 var battlefield = new Array(length_battlefield);
 for (i = 0; i < battlefield.length; i++){
@@ -188,9 +189,15 @@ function onButtonDown(){
 }
 
 function onButtonDown1(){
-  if(flag_ship.length == 0){
-    socket.emit('shot',battlefield);
+  var board = [];
+  for(var i = 0; i < battlefield.length; i++){
+    for(var j = 0; j < battlefield.length; j++){
+      board.push(battlefield[i][j]);
+    }
   }
+  var obj = '{ "room":"'+room+'","nick":"'+nick+'","board":"'+board+'" }';
+  var parcel = JSON.parse(obj);
+  socket.emit('setup',parcel);
 }
 
 function mouse_position(e){

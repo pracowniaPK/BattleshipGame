@@ -2,13 +2,14 @@
 
 {% block content %}
   <script type="text/javascript" >
-    console.log('{{nick}}');
-    console.log('{{room}}');
+    var nick = '{{nick}}';
+    var room = '{{room}}';
     var game;
     socket.emit('get_game', '{{room}}', function (data) { 
         game = JSON.parse(data);
         console.log(game);
     });
   </script>
+  <script type="text/javascript" src="{{ url_for('static', filename='javascript/game.js') }}"></script>
   <script type="text/javascript" src="{{ url_for('static', filename='javascript/arrangement_ships.js') }}"></script>
 {% endblock %}
