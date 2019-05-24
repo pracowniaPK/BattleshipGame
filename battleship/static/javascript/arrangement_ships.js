@@ -1,5 +1,6 @@
 //Create table for battlefield
 //IMPORTANT!!! size array
+
 var length_battlefield = 11;
 var battlefield = new Array(length_battlefield);
 for (i = 0; i < battlefield.length; i++){
@@ -13,10 +14,8 @@ for(var i = 0; i < battlefield.length; i++){
 }
 
 //signs for array battlefield
-//  (L) - LOCKED - your ships can't touch
-//  (1) - my ship
-// (-1) - my burning ship
-//  (B) - BOMB - your bomb
+//  [L] - LOCKED - your ships can't touch
+//  [1] - my ship
 
 //array for sprites
 var sectors = new Array(length_battlefield);
@@ -139,11 +138,8 @@ function logKey(e) {
 }
 
 function onButtonOver(){
-  
-  
   this.isOver = true;
   this.alpha =  0.5;
-
 }
 
 function onButtonOut(){
@@ -182,18 +178,26 @@ function onButtonDown(){
     set_lock(x,y,flag_ship[flag_ship.length-1]);
     write_all_battlefield();
     flag_ship.pop();
+    
   }
 
     if(flag_ship.length == 0){
       button.interactive = true;
+      deactivate();
     }
   }
 }
 
 function onButtonDown1(){
-  if(flag_ship.length == 0){
-    socket.emit('shot',battlefield);
+  var board = [];
+  for(var i = 0; i < battlefield.length; i++){
+    for(var j = 0; j < battlefield.length; j++){
+      board.push(battlefield[i][j]);
+    }
   }
+  var obj = '{ "room":"'+room+'","nick":"'+nick+'","board":"'+board+'" }';
+  var parcel = JSON.parse(obj);
+  socket.emit('setup',parcel);
 }
 
 function mouse_position(e){
@@ -262,6 +266,14 @@ function set_lock(x ,y ,flag_ship){
           sectors[y-1+i][x-2+j].interactive = false;
         }
       }
+    }
+  }
+}
+
+function deactivate(){
+  for(var i = 0; i < battlefield.length; i++){
+    for(var j = 0; j < battlefield.length; j++){
+      sectors[j][i].interactive = false;
     }
   }
 }

@@ -29,6 +29,10 @@ def game_view():
 	nick = request.form['nick']
 	return render_template('register/game_intro_view.html', nick=nick, room=room)
 
+@app.route('/game')
+def game():
+	return render_template('register/game_view.html')
+
 @socketio.on('create')
 def on_create(date):
 	nick = date['nick']
@@ -54,10 +58,16 @@ def on_join(data):
 	else:
 		send('there is no room {}'.format(room))
 
+@socketio.on('get_game')
+def on_get_game(room):
+	return ROOMS[room].to_json()
+
 @socketio.on('setup')
 def on_setup(data):
 	room = data['room']
-	room.setup(data['board'], data['nick'])
+	obj = data['board'].split(',')
+	# room.setup(data['board'], data['nick'])
+	ROOMS[room].setup(obj)
 	if room.ready:
 		emit('game_update', ROOMS[room].to_json(), room=room)
 
@@ -68,3 +78,4 @@ def on_shot(data):
 	room = data['room']
 	ROOMS[room].shot(x, y)
 	emit('game_update', ROOMS[room].to_json(), room=room)
+	
