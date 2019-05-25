@@ -65,17 +65,25 @@ def on_get_game(room):
 @socketio.on('setup')
 def on_setup(data):
 	room = data['room']
-	obj = data['board'].split(',')
-	# room.setup(data['board'], data['nick'])
+	obj = list(map(int, data['board'].split(',')))
 	ROOMS[room].setup(obj)
-	if room.ready:
-		emit('game_update', ROOMS[room].to_json(), room=room)
+	if ROOMS[room].ready:
+		print('ready')
+		emit('game_update', ROOMS[room].to_json())
+	
+	# player1 nie dostaje strzała na 'game_update'
+	# while True:
+	# 	if ROOMS[room].ready:
+	# 		print("OK?")
+	# 		emit('game_update', ROOMS[room].to_json())
+	# 		break
 
 @socketio.on('shot')
 def on_shot(data):
 	x = int(data['x'])
 	y = int(data['y'])
+	print(x, y)
 	room = data['room']
 	ROOMS[room].shot(x, y)
-	emit('game_update', ROOMS[room].to_json(), room=room)
+	emit('game_update', ROOMS[room].to_json())
 	
