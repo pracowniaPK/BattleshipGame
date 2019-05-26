@@ -57,7 +57,8 @@ var button;
     .add('static/images/texture_ship2.png') //2
     .add('static/images/texture_ship3.png') //3
     .add('static/images/texture_ship4.png') //4
-    .add('static/images/celownik.png')
+    .add('static/images/celownik_black.png')
+    .add('static/images/celownik_red.png')
     .add('static/images/fire.jpg')
     .load(setup);
     
@@ -107,7 +108,7 @@ var button;
       container.addChild(ship);
     }
 
-    var texture_button = PIXI.utils.TextureCache["static/images/celownik.png"];
+    var texture_button = PIXI.utils.TextureCache["static/images/celownik_black.png"];
     button = new PIXI.Sprite(texture_button);
     button.buttonMode = true;
 

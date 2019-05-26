@@ -21,58 +21,63 @@ socket.on('game_update', function(room_json) {
     console.log(board);
 
     for(var i = 0; i < sectors.length; i++){
-        console.log('update2');
         for(var j = 0; j < sectors.length; j++){
             var ind = sectors.length * i + j;
 
-            if(board[ind] == 0 || board[ind] == 1 || board[ind] == 2){
-                var sector = new PIXI.Sprite(PIXI.utils.TextureCache["ocean2-"+ind+".png"]);
+            var sector = new PIXI.Sprite(PIXI.utils.TextureCache["ocean2-"+ind+".png"]);
   
-                sector.interactive = true;      
-                sector.buttonMode = true;
+            sector.interactive = true;      
+            sector.buttonMode = true;
 
-                sector.position.set(j*interval, i*interval);
-                if(board[ind] == player){
-                    sector.alpha = 0.5;
-                    sector.interactive = false;
-                }
-  
-                sector
-                    .on('mouseover',onButtonOver)
-                    .on('mouseout', onButtonOut)
-                    .on('mousedown', onButtonDown)
-        
-                container.addChild(sector);
+            sector.position.set(j*interval, i*interval);
+
+            if(board[ind] == player){
+                sector.alpha = 0.5;
+                sector.interactive = false;
             }
-            else if(board[ind] == 5){ //missed shot
-                var sector = new PIXI.Sprite(PIXI.utils.TextureCache["static/images/celownik.png"]);
-                sector.position.set(j*interval, i*interval);
-                sector.alpha = 1;
-                sector.width = 45;
-                sector.height = 45;
-        
-                container.addChild(sector);
+
+            sector
+                .on('mouseover',onButtonOver)
+                .on('mouseout', onButtonOut)
+                .on('mousedown', onButtonDown)
+    
+            container.addChild(sector);
+        }
+    }
+
+
+    for(var i = 0; i < sectors.length; i++){
+        for(var j = 0; j < sectors.length; j++){
+            var ind = sectors.length * i + j;
+
+            if(board[ind] == 5){ //missed shot
+                var sector = new PIXI.Sprite(PIXI.utils.TextureCache["static/images/celownik_black.png"]); 
             }
-            else if(board[ind] == 6){ //crash
+            else if(board[ind] == 6){ //crash (2 ships in one sector)
                 var sector = new PIXI.Sprite(PIXI.utils.TextureCache["static/images/fire.jpg"]);
-                sector.position.set(j*interval, i*interval);
-                sector.alpha = 1;
-                sector.width = 45;
-                sector.height = 45;
-        
-                container.addChild(sector);
+            }
+            else if( (player==1 && board[ind] == 3) || (player == 2 && board[ind] == 4)){ //moje zniszczone
+                var sector = new PIXI.Sprite(PIXI.utils.TextureCache["static/images/fire.jpg"]);
+            }
+            else if( (player==1 && board[indx] == 4) || (player == 2 && board[ind] == 3)){ //przeciwnika zniszczone
+                var sector = new PIXI.Sprite(PIXI.utils.TextureCache["static/images/celownik_red.png"]);
             }
 
-            
+            sector.position.set(j*interval, i*interval);
+            sector.alpha = 0.5;
+            sector.width = 44;
+            sector.height = 44;
+    
+            container.addChild(sector);
         }
     }
 
     function onButtonDown(){
-        deactivate();
         e = event;
         if(e.clientX > 0 && e.clientY > 0 && e.clientX < 500 && e.clientY < 500){
-          var x = this.x/interval;
-          var y = this.y/interval;
+        deactivate();
+        var x = this.x/interval;
+        var y = this.y/interval;
 
         sectors[y][x].alpha = 0.5;
         sectors[y][x].interactive = false;
@@ -80,6 +85,7 @@ socket.on('game_update', function(room_json) {
         let data = {};
         data['x'] = x;
         data['y'] = y;
+        data['room'] = json['room'];
         socket.emit('shot',data);
         }
     }
