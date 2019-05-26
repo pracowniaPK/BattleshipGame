@@ -23,6 +23,8 @@ for (i = 0; i < sectors.length; i++){
   sectors[i] = new Array(sectors.length);
 }
 
+var ships = [];
+
 var flag_ship = [1,1,1,1,2,2,2,3,3,4];
 var vertical = true; //vertical or horizontal
 
@@ -45,7 +47,7 @@ var button;
   document.body.appendChild(app.view);
 
   //Create a Pixi Container for Battlefield
-  let container = new PIXI.Container();
+  var container = new PIXI.Container();
   app.stage.addChild(container);
 
   //Load textures to memory
@@ -55,7 +57,9 @@ var button;
     .add('static/images/texture_ship2.png') //2
     .add('static/images/texture_ship3.png') //3
     .add('static/images/texture_ship4.png') //4
-    .add('static/images/celownik.png')
+    .add('static/images/celownik_black.png')
+    .add('static/images/celownik_red.png')
+    .add('static/images/fire.jpg')
     .load(setup);
     
   //This `setup` function will run when the image has loaded
@@ -76,8 +80,8 @@ var button;
         sector.buttonMode = true;
   
         sector
-          .on('mouseover',onButtonOver)
-          .on('mouseout', onButtonOut)
+          .on('mouseover',onButtonOverSector)
+          .on('mouseout', onButtonOutSector)
           .on('mousedown', onButtonDown)
           
         sectors[i][j] = sector;
@@ -98,11 +102,13 @@ var button;
         .on('mouseover',onButtonOver)
         .on('mouseout', onButtonOut)
         .on('mousedown', onButtonDown)
+
+        ships.push(ship);
       
       container.addChild(ship);
     }
 
-    var texture_button = PIXI.utils.TextureCache["static/images/celownik.png"];
+    var texture_button = PIXI.utils.TextureCache["static/images/celownik_black.png"];
     button = new PIXI.Sprite(texture_button);
     button.buttonMode = true;
 
@@ -147,6 +153,44 @@ function onButtonOut(){
   this.alpha = 1;
 } 
 
+function onButtonOverSector(){
+  e = event;
+  if(e.clientX > 0 && e.clientY > 0 && e.clientX < 500 && e.clientY < 500){
+    var x = this.x/interval;
+    var y = this.y/interval;
+
+    var flag = chech_locked(x,y,flag_ship[flag_ship.length-1]);
+
+    if(flag == false){
+      if(flag_ship[flag_ship.length-1] == 1){
+        sectors[y][x].alpha = 0.5;
+      }
+      else{
+        for(var i = 0; i < flag_ship[flag_ship.length-1]; i++){
+          if(vertical == true){
+            sectors[y-1+i][x].alpha = 0.5;
+          }
+          else{
+            sectors[y][x-1+i].alpha = 0.5;
+          }
+        }
+      }
+    }
+  }
+}
+
+// TODO
+function onButtonOutSector(){
+  
+  for(var i = 0; i < sectors.length; i++){
+    for(var j = 0; j < sectors.length; j++){
+      if(battlefield[i][j] != 1){
+      sectors[i][j].alpha = 1;
+      }
+    }
+  }
+}
+
 function onButtonDown(){
   e = event;
   if(e.clientX > 0 && e.clientY > 0 && e.clientX < 500 && e.clientY < 500){
@@ -178,8 +222,7 @@ function onButtonDown(){
     set_lock(x,y,flag_ship[flag_ship.length-1]);
     write_all_battlefield();
     flag_ship.pop();
-    
-  }
+    }
 
     if(flag_ship.length == 0){
       button.interactive = true;
@@ -198,17 +241,26 @@ function onButtonDown1(){
   var obj = '{ "room":"'+room+'","nick":"'+nick+'","board":"'+board+'" }';
   var parcel = JSON.parse(obj);
   socket.emit('setup',parcel);
-}
 
-function mouse_position(e){
-    var posX = e.clientX;
-    var posY = e.clientY;
+  container.removeChild(button);
+  container.removeChild(ships[0]);
+  container.removeChild(ships[1]);
+  container.removeChild(ships[2]);
+  container.removeChild(ships[3]);
 
-    // console.log(posX+" "+posY);
+  // TODO
+  app.width = 500;
 }
 
 //************************************************** */
 //helper functions
+function mouse_position(e){
+  var posX = e.clientX;
+  var posY = e.clientY;
+
+  // console.log(posX+" "+posY);
+}
+
 function write_all_battlefield(){
   for(var i = 0; i < battlefield.length; i++){
     var text = "";
@@ -222,19 +274,19 @@ function write_all_battlefield(){
 function chech_locked(x, y, flag_ship){
   console.log(flag_ship);
   if(flag_ship == 1){
-    if(battlefield[y][x] == 'L'){
+    if(sectors[y][x].interactive == false){
       return true;
     }
   }
   else{
     for(var i = 0; i < flag_ship; i++){
       if(vertical == true){
-        if((y-1+i) < 0 || (y-1+i) > battlefield.length - 1  || battlefield[y-1+i][x] == 'L' || battlefield[y-1+i][x] == 1){
+        if((y-1+i) < 0 || (y-1+i) > battlefield.length - 1  || sectors[y-1+i][x].interactive == false || battlefield[y-1+i][x] == 1){
           return true;
         }
       }
       else{
-        if((x-1+i) < 0 || (x-1+i) > battlefield.length - 1 || battlefield[y][x-1+i] == 'L' || battlefield[y][x-1+i] == 1){
+        if((x-1+i) < 0 || (x-1+i) > battlefield.length - 1 || sectors[y][x-1+i].interactive == false || battlefield[y][x-1+i] == 1){
           return true;
         }
       }
@@ -248,7 +300,6 @@ function set_lock(x ,y ,flag_ship){
     for(var i = 0; i < 3; i++){
       for(var j = 0; j < 3; j++){
         if((y-1+j)>=0  && (y-1+j)<battlefield.length && (x-1+i) >=0 && (x-1+i) < battlefield.length && battlefield[y-1+j][x-1+i] != 1){
-          battlefield[y-1+j][x-1+i] = 'L';
           sectors[y-1+j][x-1+i].interactive = false;
         }
       }
@@ -258,11 +309,9 @@ function set_lock(x ,y ,flag_ship){
     for(var i = 0; i < 3; i++){
       for(var j = 0; j < flag_ship+2; j++){
         if(vertical == true && (y-2+j)>=0  && (y-2+j)<battlefield.length && (x-1+i) >=0 && (x-1+i) < battlefield.length && battlefield[y-2+j][x-1+i] != 1){
-          battlefield[y-2+j][x-1+i] = 'L';
           sectors[y-2+j][x-1+i].interactive = false;
         }
         else if(vertical == false && (y-1+i)>=0  && (y-1+i)<battlefield.length && (x-2+j) >=0 && (x-2+j) < battlefield.length && battlefield[y-1+i][x-2+j] != 1){
-          battlefield[y-1+i][x-2+j] = 'L';
           sectors[y-1+i][x-2+j].interactive = false;
         }
       }
@@ -271,9 +320,9 @@ function set_lock(x ,y ,flag_ship){
 }
 
 function deactivate(){
-  for(var i = 0; i < battlefield.length; i++){
-    for(var j = 0; j < battlefield.length; j++){
-      sectors[j][i].interactive = false;
+  for(var i = 0; i < sectors.length; i++){
+    for(var j = 0; j < sectors.length; j++){
+      sectors[i][j].interactive = false;
     }
   }
 }

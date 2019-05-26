@@ -31,12 +31,13 @@ class Game:
     def setup(self, board):
         if [x for x in self.board if x != 0]:
             for i in range(len(self.board)):
-                if(self.board[i] == 1 and board[i] == 2):
+                if(self.board[i] == 1 and board[i] == 1):
                     self.board[i] = 6
-                elif(board[i] == 2):
+                elif(board[i] == 1):
                     self.board[i] = 2
-                if(self.board[i] == 1 and board[i] == 2):
-                    self.board[i] = 6
+                # ??
+                # if(self.board[i] == 1 and board[i] == 2):
+                #     self.board[i] = 6
             self.round = random.randint(1,2)
             self.ready = True
         else:
