@@ -74,7 +74,7 @@ def on_setup(data):
 	ROOMS[room].setup(obj)
 	if ROOMS[room].ready:
 		print('ready')
-		emit('game_update', ROOMS[room].to_json())
+		emit('game_update', ROOMS[room].to_json(), room=room)
 	
 	# player1 nie dostaje strzała na 'game_update'
 	# while True:
@@ -90,5 +90,5 @@ def on_shot(data):
 	print(x, y)
 	room = data['room']
 	ROOMS[room].shot(x, y)
-	emit('game_update', ROOMS[room].to_json())
+	emit('game_update', ROOMS[room].to_json(), room=room)
 	

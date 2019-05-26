@@ -67,13 +67,13 @@ socket.on('game_update', function(room_json) {
                 flag = 1;
             }
             else if( (player==1 && board[ind] == 4) || (player == 2 && board[ind] == 3)){ //przeciwnika zniszczone
-                var sector = new PIXI.Sprite(PIXI.utils.TextureCache["static/images/celownik_black.png"]);
+                var sector = new PIXI.Sprite(PIXI.utils.TextureCache["static/images/celownik_red.png"]);
                 flag = 1;
             }
 
             if(flag == 1){
                 sector.position.set(j*interval, i*interval);
-                sector.alpha = 0.5;
+                sector.alpha = 1;
                 sector.width = 44;
                 sector.height = 44;
                 sectors[i][j].interactive = false;
@@ -89,7 +89,7 @@ socket.on('game_update', function(room_json) {
         var x = this.x/interval;
         var y = this.y/interval;
 
-        sectors[y][x].alpha = 0.5;
+        sectors[y][x].alpha = 1;
         sectors[y][x].interactive = false;
 
         let data = {};
@@ -100,8 +100,8 @@ socket.on('game_update', function(room_json) {
         }
     }
 
-    // if( !(json['round'] == 1 && json['player1'] == nick) && !(json['round'] == 2 && json['player2'] == nick)) {
-    //     deactivate();
-    // }
+    if( !(json['round'] == 1 && json['player1'] == nick) && !(json['round'] == 2 && json['player2'] == nick)) {
+        deactivate();
+    }
     
 });
