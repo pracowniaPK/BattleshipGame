@@ -80,8 +80,8 @@ var button;
         sector.buttonMode = true;
   
         sector
-          .on('mouseover',onButtonOver)
-          .on('mouseout', onButtonOut)
+          .on('mouseover',onButtonOverSector)
+          .on('mouseout', onButtonOutSector)
           .on('mousedown', onButtonDown)
           
         sectors[i][j] = sector;
@@ -153,6 +153,44 @@ function onButtonOut(){
   this.alpha = 1;
 } 
 
+function onButtonOverSector(){
+  e = event;
+  if(e.clientX > 0 && e.clientY > 0 && e.clientX < 500 && e.clientY < 500){
+    var x = this.x/interval;
+    var y = this.y/interval;
+
+    var flag = chech_locked(x,y,flag_ship[flag_ship.length-1]);
+
+    if(flag == false){
+      if(flag_ship[flag_ship.length-1] == 1){
+        sectors[y][x].alpha = 0.5;
+      }
+      else{
+        for(var i = 0; i < flag_ship[flag_ship.length-1]; i++){
+          if(vertical == true){
+            sectors[y-1+i][x].alpha = 0.5;
+          }
+          else{
+            sectors[y][x-1+i].alpha = 0.5;
+          }
+        }
+      }
+    }
+  }
+}
+
+// TODO
+function onButtonOutSector(){
+  
+  for(var i = 0; i < sectors.length; i++){
+    for(var j = 0; j < sectors.length; j++){
+      if(battlefield[i][j] != 1){
+      sectors[i][j].alpha = 1;
+      }
+    }
+  }
+}
+
 function onButtonDown(){
   e = event;
   if(e.clientX > 0 && e.clientY > 0 && e.clientX < 500 && e.clientY < 500){
@@ -184,8 +222,7 @@ function onButtonDown(){
     set_lock(x,y,flag_ship[flag_ship.length-1]);
     write_all_battlefield();
     flag_ship.pop();
-    
-  }
+    }
 
     if(flag_ship.length == 0){
       button.interactive = true;
@@ -215,15 +252,15 @@ function onButtonDown1(){
   app.width = 500;
 }
 
-function mouse_position(e){
-    var posX = e.clientX;
-    var posY = e.clientY;
-
-    // console.log(posX+" "+posY);
-}
-
 //************************************************** */
 //helper functions
+function mouse_position(e){
+  var posX = e.clientX;
+  var posY = e.clientY;
+
+  // console.log(posX+" "+posY);
+}
+
 function write_all_battlefield(){
   for(var i = 0; i < battlefield.length; i++){
     var text = "";
@@ -285,7 +322,7 @@ function set_lock(x ,y ,flag_ship){
 function deactivate(){
   for(var i = 0; i < sectors.length; i++){
     for(var j = 0; j < sectors.length; j++){
-      sectors[j][i].interactive = false;
+      sectors[i][j].interactive = false;
     }
   }
 }
