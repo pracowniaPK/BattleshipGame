@@ -30,14 +30,17 @@ def test_shot():
 
     game.shot(0, 1)
     assert game.board == [5, 2, 0, 3, 6, 1, 0, 2, 0]
+    assert game.round == 2
+
+    game.shot(2,2)
     assert game.round == 1
 
     game.shot(1, 0)
-    assert game.board == [5, 4, 0, 3, 6, 1, 0, 2, 0]
-    assert game.round == 2
+    assert game.board == [5, 4, 0, 3, 6, 1, 0, 2, 5]
+    assert game.round == 1
     assert game.won == None
 
     game.shot(2, 1)
-    assert game.board == [5, 4, 0, 3, 6, 3, 0, 2, 0]
+    assert game.board == [5, 4, 0, 3, 6, 3, 0, 2, 5]
     assert game.won == 2
 

@@ -40,7 +40,7 @@ def on_create(date):
 	room = new_game.room
 	ROOMS[room] = new_game
 	join_room(room)
-	# emit('game_update', ROOMS[room].to_json(), room=room)
+	emit('game_update', ROOMS[room].to_json(), room=room)
 	return new_game.to_json()
 
 @socketio.on('join')
