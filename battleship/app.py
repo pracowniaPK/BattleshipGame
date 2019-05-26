@@ -1,5 +1,5 @@
 from flask import Flask, g, render_template, redirect, request, url_for
-from flask_socketio import SocketIO, emit, join_room, send
+from flask_socketio import SocketIO, emit, join_room, send, rooms
 
 from .game import Game
 
@@ -61,6 +61,11 @@ def on_join(data):
 @socketio.on('get_game')
 def on_get_game(room):
 	return ROOMS[room].to_json()
+
+@socketio.on('join_game_room')
+def on_join_game_room(room):
+	join_room(room)
+	return rooms()
 
 @socketio.on('setup')
 def on_setup(data):

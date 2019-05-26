@@ -5,7 +5,11 @@
     var nick = '{{nick}}';
     var room = '{{room}}';
     var game;
-    socket.emit('get_game', '{{room}}', function (data) { 
+    socket.emit('join_game_room', '{{room}}', function(data) {
+      console.log('joined room:');
+      console.log(data);
+    });
+    socket.emit('get_game', '{{room}}', function(data) { 
         game = JSON.parse(data);
         console.log(game);
     });
