@@ -44,11 +44,16 @@ class Game:
 
     def shot(self, x, y):
         ind = self.size * y + x
+        bonus = False
         if self.board[ind] == 0:
             self.board[ind] = 5
         elif self.board[ind] == 1:
+            if self.round == 2:
+                bonus = True
             self.board[ind] = 3
         elif self.board[ind] == 2:
+            if self.round == 1:
+                bonus = True
             self.board[ind] = 4
 
         if not 1 in self.board:
@@ -56,7 +61,8 @@ class Game:
         elif not 2 in self.board:
             self.won = 1
 
-        if self.round == 1:
-            self.round = 2
-        else:
-            self.round = 1
+        if not bonus:
+            if self.round == 1:
+                self.round = 2
+            else:
+                self.round = 1
