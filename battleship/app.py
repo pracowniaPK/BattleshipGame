@@ -18,10 +18,11 @@ def games_list():
 		g.nick = request.form['nick']
 		print(g.nick)
 	try:
-		# TODO odfiltrować pełne gry
-		return render_template('register/games_list.html', nick=g.nick, rooms=ROOMS.values())
+		nick = g.nick
 	except AttributeError as _:
 		return redirect(url_for('register'))
+	games = [g for g in ROOMS.values() if g.player2 == None]
+	return render_template('register/games_list.html', nick=nick, rooms=games)
 
 @app.route('/game_view', methods=['POST'])
 def game_view():
