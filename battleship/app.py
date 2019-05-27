@@ -54,7 +54,7 @@ def on_join(data):
 		#send('player {} joined'.format(nick), room=room)
 		emit('game_update', ROOMS[room].to_json(), room=room)
 	elif room in ROOMS:
-		send('room is ful')
+		send('room is full')
 	else:
 		send('there is no room {}'.format(room))
 
@@ -75,13 +75,6 @@ def on_setup(data):
 	if ROOMS[room].ready:
 		print('ready')
 		emit('game_update', ROOMS[room].to_json(), room=room)
-	
-	# player1 nie dostaje strzała na 'game_update'
-	# while True:
-	# 	if ROOMS[room].ready:
-	# 		print("OK?")
-	# 		emit('game_update', ROOMS[room].to_json())
-	# 		break
 
 @socketio.on('shot')
 def on_shot(data):

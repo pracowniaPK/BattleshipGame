@@ -36,7 +36,7 @@ var button;
 
   //Create a Pixi Application
   let app = new PIXI.Application({ 
-      width: 700, 
+      width: 600, 
       height: 500,                       
       antialias: true, 
       transparent: false, 
@@ -53,10 +53,7 @@ var button;
   //Load textures to memory
   PIXI.loader
     .add('static/images/battlefield.json')
-    .add('static/images/texture_ship1.png') //1
-    .add('static/images/texture_ship2.png') //2
-    .add('static/images/texture_ship3.png') //3
-    .add('static/images/texture_ship4.png') //4
+    .add('static/images/texture_ship2.png')
     .add('static/images/celownik_black.png')
     .add('static/images/celownik_red.png')
     .add('static/images/fire.jpg')
@@ -90,33 +87,15 @@ var button;
       }
     }
 
-    for (var i = 0; i < 4; i++) { //wiersze
-      
-      var texture_ship = PIXI.utils.TextureCache["static/images/texture_ship"+(i+1)+".png"];
-      var ship = new PIXI.Sprite(texture_ship);
-      ship.position.set(500+i*50,10);
-      ship.interactive = true;      
-      ship.buttonMode = true;
-      
-      ship
-        .on('mouseover',onButtonOver)
-        .on('mouseout', onButtonOut)
-        .on('mousedown', onButtonDown)
-
-        ships.push(ship);
-      
-      container.addChild(ship);
-    }
-
-    var texture_button = PIXI.utils.TextureCache["static/images/celownik_black.png"];
+    var texture_button = PIXI.utils.TextureCache["static/images/texture_ship2.png"];
     button = new PIXI.Sprite(texture_button);
     button.buttonMode = true;
 
-    button.scale.set(0.1, 0.1);
+    // button.scale.set(0.1, 0.1);
     button.alpha = 1;
 
-    button.x = 500;
-    button.y = 200;
+    button.x = 550;
+    button.y = 300;
 
     // make the button interactive...
     button.interactive = false;
