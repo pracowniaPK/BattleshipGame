@@ -27,10 +27,14 @@ function redirect_to_game(nick, room) {
     form.submit();
 }
 </script>
-<a>Jesteś zalogowany jako: {{nick}}</a>
-{% for item in rooms %}
-        <li><button onclick="click_join_room('{{item.room}}')">{{ item.room }} : {{item.player1}}</button></li>
-{% endfor %}
-
-<p><button onclick="click_new_room('{{nick}}')">New game</button></p>
+<p class="login_info">Jesteś zalogowany jako: <span class="bld">{{nick}}</span></p>
+<div class="games_list">
+    <p>Wybierz grę z listy dostępnych:</p>
+    {% for item in rooms %}
+        <button onclick="click_join_room('{{item.room}}')">{{ item.room }}: {{item.player1}}</button>
+        <br />
+    {% endfor %}
+    <p>lub utwórz nową:</p>
+    <p><button onclick="click_new_room('{{nick}}')">Nowa gra</button></p>
+</div>
 {% endblock %}
