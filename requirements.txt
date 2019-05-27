@@ -1,1 +1,5 @@
 flask
+flask-socketio
+flask-script
+pytest
+coverage
