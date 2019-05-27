@@ -1,10 +1,5 @@
 socket.on('game_update', function(room_json) {
-    console.log('update');
     var json = JSON.parse(room_json);
-    console.log(json['player1']);
-    console.log(json['player2']);
-    console.log(nick);
-    console.log(json['round']);
     
     var player;
 
@@ -15,10 +10,17 @@ socket.on('game_update', function(room_json) {
         player = 2;
     }
 
+    if(json['round'] == player){
+        information.text = "Twój ruch"
+    }
+    else{
+        information.text = "Ruch przeciwnika"
+    }
+
     container.removeChildren(0, container.children.length);
 
     var board = json['board'];
-    console.log(board);
+    // console.log(board);
 
     for(var i = 0; i < sectors.length; i++){
         for(var j = 0; j < sectors.length; j++){
@@ -100,8 +102,24 @@ socket.on('game_update', function(room_json) {
         }
     }
 
-    if( !(json['round'] == 1 && json['player1'] == nick) && !(json['round'] == 2 && json['player2'] == nick)) {
+    if(json['won'] != 0){
+        deactivate();
+        var txt = "";
+        if(json['won'] == 1){
+            txt = json['player1'];
+        }
+        else{
+            txt = json['player2'];
+        }
+        confirm("Wygrywa "+txt+ "!");
+        let data = {};
+        data['room'] = json['room'];
+        socket.emit('exit',data, function() {
+            window.location.replace(url_games_list);
+        });
+
+    }
+    else if( !(json['round'] == 1 && json['player1'] == nick) && !(json['round'] == 2 && json['player2'] == nick)) {
         deactivate();
     }
-    
 });

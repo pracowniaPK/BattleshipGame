@@ -13,6 +13,7 @@
         game = JSON.parse(data);
         console.log(game);
     });
+    var url_games_list = '{{ url_for("games_list") }}';
 
   </script>
   <script type="text/javascript" src="{{ url_for('static', filename='javascript/arrangement_ships.js') }}"></script>

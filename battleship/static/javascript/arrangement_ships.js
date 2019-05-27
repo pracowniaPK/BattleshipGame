@@ -36,15 +36,15 @@ var button;
 
   //Create a Pixi Application
   let app = new PIXI.Application({ 
-      width: 600, 
+      width: 700, 
       height: 500,                       
       antialias: true, 
       transparent: false, 
       resolution: 1,
-      backgroundColor: 0xDDFFFF
+      backgroundColor: 0xeff0f2
     }
   )
-  document.body.appendChild(app.view);
+  document.getElementsByClassName("main_container")[0].appendChild(app.view);
 
   //Create a Pixi Container for Battlefield
   var container = new PIXI.Container();
@@ -53,7 +53,7 @@ var button;
   //Load textures to memory
   PIXI.loader
     .add('static/images/battlefield.json')
-    .add('static/images/texture_ship2.png')
+    // .add('static/images/texture_ship2.png')
     .add('static/images/celownik_black.png')
     .add('static/images/celownik_red.png')
     .add('static/images/fire.jpg')
@@ -86,29 +86,11 @@ var button;
         container.addChild(sector);
       }
     }
-
-    var texture_button = PIXI.utils.TextureCache["static/images/texture_ship2.png"];
-    button = new PIXI.Sprite(texture_button);
-    button.buttonMode = true;
-
-    // button.scale.set(0.1, 0.1);
-    button.alpha = 1;
-
-    button.x = 550;
-    button.y = 300;
-
-    // make the button interactive...
-    button.interactive = false;
-    button.buttonMode = true;
-
-    button
-      .on('mouseover',onButtonOver)
-      .on('mouseout', onButtonOut)
-      .on('mousedown', onButtonDown1)
-
-    container.addChild(button);
   }
 
+var information = new PIXI.Text('Rozmieść swoje statki\n na planszy!',{fontFamily : 'Arial', fontSize: 12, fill : 0x3d5d8e, align : 'center'});
+information.position.set(520,10);
+app.stage.addChild(information);
 
 document.addEventListener('keypress', logKey);
 
@@ -119,7 +101,6 @@ function logKey(e) {
   else if(e.code == "Space" && vertical== false){
     vertical = true;
   }
-  console.log(vertical);
 }
 
 function onButtonOver(){
@@ -134,7 +115,6 @@ function onButtonOut(){
 
 function onButtonOverSector(){
   e = event;
-  if(e.clientX > 0 && e.clientY > 0 && e.clientX < 500 && e.clientY < 500){
     var x = this.x/interval;
     var y = this.y/interval;
 
@@ -156,9 +136,7 @@ function onButtonOverSector(){
       }
     }
   }
-}
 
-// TODO
 function onButtonOutSector(){
   
   for(var i = 0; i < sectors.length; i++){
@@ -172,20 +150,18 @@ function onButtonOutSector(){
 
 function onButtonDown(){
   e = event;
-  if(e.clientX > 0 && e.clientY > 0 && e.clientX < 500 && e.clientY < 500){
-    var x = this.x/interval;
-    var y = this.y/interval;
 
-    var flag = chech_locked(x,y,flag_ship[flag_ship.length-1]);
-
-    if(flag == false){
-      if(flag_ship[flag_ship.length-1] == 1){
+  var x = this.x/interval;
+  var y = this.y/interval;
+  var flag = chech_locked(x,y,flag_ship[flag_ship.length-1]);
+  if(flag == false){
+    if(flag_ship[flag_ship.length-1] == 1){
         battlefield[y][x] = 1;
         sectors[y][x].alpha = 0.5;
         sectors[y][x].interactive = false;
-      }
-      else{
-      for(var i = 0; i < flag_ship[flag_ship.length-1]; i++){
+    }
+    else{
+    for(var i = 0; i < flag_ship[flag_ship.length-1]; i++){
         if(vertical == true){
           battlefield[y-1+i][x] = 1;
           sectors[y-1+i][x].alpha = 0.5;
@@ -196,50 +172,29 @@ function onButtonDown(){
           sectors[y][x-1+i].alpha = 0.5;
           sectors[y][x-1+i].interactive = false;
         }
+    }
+  }
+  set_lock(x,y,flag_ship[flag_ship.length-1]);
+  // write_all_battlefield();
+  flag_ship.pop();
+  }
+  if(flag_ship.length == 0){
+    var board = [];
+    for(var i = 0; i < battlefield.length; i++){
+      for(var j = 0; j < battlefield.length; j++){
+        board.push(battlefield[i][j]);
       }
     }
-    set_lock(x,y,flag_ship[flag_ship.length-1]);
-    write_all_battlefield();
-    flag_ship.pop();
-    }
-
-    if(flag_ship.length == 0){
-      button.interactive = true;
-      deactivate();
-    }
-  }
-}
-
-function onButtonDown1(){
-  var board = [];
-  for(var i = 0; i < battlefield.length; i++){
-    for(var j = 0; j < battlefield.length; j++){
-      board.push(battlefield[i][j]);
-    }
-  }
   var obj = '{ "room":"'+room+'","nick":"'+nick+'","board":"'+board+'" }';
   var parcel = JSON.parse(obj);
   socket.emit('setup',parcel);
-
-  container.removeChild(button);
-  container.removeChild(ships[0]);
-  container.removeChild(ships[1]);
-  container.removeChild(ships[2]);
-  container.removeChild(ships[3]);
-
-  // TODO
-  app.width = 500;
-}
+  deactivate();
+  information.text = "Oczekiwanie\n na drugiego gracza!"
+  }
+} 
 
 //************************************************** */
 //helper functions
-function mouse_position(e){
-  var posX = e.clientX;
-  var posY = e.clientY;
-
-  // console.log(posX+" "+posY);
-}
-
 function write_all_battlefield(){
   for(var i = 0; i < battlefield.length; i++){
     var text = "";
@@ -251,7 +206,7 @@ function write_all_battlefield(){
 }
 
 function chech_locked(x, y, flag_ship){
-  console.log(flag_ship);
+  // console.log(flag_ship);
   if(flag_ship == 1){
     if(sectors[y][x].interactive == false){
       return true;

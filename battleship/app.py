@@ -52,8 +52,6 @@ def on_join(data):
 	if room in ROOMS and ROOMS[room].player2 == None:
 		ROOMS[room].player2 = nick
 		join_room(room)
-		#send('player {} joined'.format(nick), room=room)
-		emit('game_update', ROOMS[room].to_json(), room=room)
 	elif room in ROOMS:
 		send('room is full')
 	else:
@@ -85,4 +83,12 @@ def on_shot(data):
 	room = data['room']
 	ROOMS[room].shot(x, y)
 	emit('game_update', ROOMS[room].to_json(), room=room)
-	
+
+@socketio.on('exit')
+def on_exit(data):
+	print('exit!!!')
+	room = data['room']
+	try:
+		ROOMS.pop(room)
+	except KeyError as _:
+		pass

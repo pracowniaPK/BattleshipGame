@@ -20,7 +20,7 @@ class Game:
         self.player2 = None
         self.ready = False
         self.round = None
-        self.won = None
+        self.won = 0
 
     def to_json(self):
         return json.dumps(self.__dict__)

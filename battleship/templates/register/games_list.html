@@ -20,8 +20,8 @@ function click_new_room(nick) {
 function redirect_to_game(nick, room) {
     var url = '{{ url_for("game_view") }}';
     var form = $('<form action="' + url + '" method="post">' +
-    '<input type="text" name="nick" value="' + nick +  '" />' +
-    '<input type="text" name="room" value="' + room + '" />' +
+    '<input type="hidden" name="nick" value="' + nick +  '" />' +
+    '<input type="hidden" name="room" value="' + room + '" />' +
     '</form>');
     $('body').append(form);
     form.submit();
