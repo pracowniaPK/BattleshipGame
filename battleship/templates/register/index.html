@@ -1,10 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<!-- <p id="profile-name" class="profile-name-card"></p> -->
+<h1>Battleship</h1>
 <form class="form-signin" action="{{ url_for('games_list') }}" method="POST">
+    wybierz swój nick:
+    <br />
     <input type="text" name="nick" id="nick" placeholder="Your nick"></input>
-    <br>
-    <button class="btn btn-lg btn-primary btn-block btn-signin" type="submit" name="">Sign in</button>
+    <br />
+    <button class="btn btn-lg btn-primary btn-block btn-signin" type="submit" name="">Dalej</button>
 </form>
 {% endblock %}

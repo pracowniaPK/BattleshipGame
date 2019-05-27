@@ -1,7 +1,42 @@
+body {
+    background-color: #51748a;
+}
+
 .main_container {
     width: 700px;
     height: 500px;
     padding: 0;
-    border: 1px solid #3d5d8e;
+    border: 1px solid #608ca3;
     margin: auto;
+    background-color: #eff0f2;
+    color: #51748a;
+    font-family: 'IBM Plex Sans', sans-serif;
+}
+
+.bld {
+    font-weight: 500;
+}
+
+.form-signin {
+    text-align: center;
+    margin: 10px;
+}
+
+.form-signin input {
+    margin: 10px;
+}
+
+h1 {
+    margin: 1em;
+    text-transform: uppercase;
+    font-size: 2em;
+}
+
+.login_info {
+    text-align: right;
+    margin: 1em;
+}
+
+.games_list {
+    margin: 2em;
 }
