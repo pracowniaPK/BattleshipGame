@@ -85,21 +85,19 @@ socket.on('game_update', function(room_json) {
     }
 
     function onButtonDown(){
-        e = event;
-        if(e.clientX > 0 && e.clientY > 0 && e.clientX < 500 && e.clientY < 500){
-        deactivate();
-        var x = this.x/interval;
-        var y = this.y/interval;
+    e = event;
+    deactivate();
+    var x = this.x/interval;
+    var y = this.y/interval;
 
-        sectors[y][x].alpha = 1;
-        sectors[y][x].interactive = false;
-
-        let data = {};
-        data['x'] = x;
-        data['y'] = y;
-        data['room'] = json['room'];
-        socket.emit('shot',data);
-        }
+    sectors[y][x].alpha = 1;
+    sectors[y][x].interactive = false;
+    
+    let data = {};
+    data['x'] = x;
+    data['y'] = y;
+    data['room'] = json['room'];
+    socket.emit('shot',data);
     }
 
     if(json['won'] != 0){
